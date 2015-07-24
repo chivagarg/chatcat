@@ -15,6 +15,11 @@ module.exports = function(express, app, passport){
 		}
 	}
 	
+	router.get('/logout', function(req, res, next){
+		req.logout();
+		res.redirect('/');
+	})
+	
 	router.get('/auth/facebook', passport.authenticate('facebook'));
 	router.get('/auth/facebook/callback', passport.authenticate('facebook',{
 		successRedirect:'/chatrooms',
@@ -24,14 +29,5 @@ module.exports = function(express, app, passport){
 		res.render('chatrooms', {title : 'Welcome to my chatroom!', user:req.user});
 	})
 	
-	router.get('/setcolor', function(req, res, next){
-		req.session.favColor = "Red";
-		res.send('Setting fav color');
-	})
-	
-	router.get('/getcolor', function(req, res, next){
-		res.send('Fav color: ' + (req.session.favColor==undefined ? "Not found" : req.session.favColor));
-	})
-
 	app.use('/', router);
 }
