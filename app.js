@@ -55,7 +55,7 @@ var userSchema = mongoose.Schema({
 // });
 
 require('./auth/passportAuth.js')(passport, FacebookStrategy, config, mongoose);
-require('./routes/routes.js')(express, app, passport, config);
+require('./routes/routes.js')(express, app, passport, config, rooms);
 // app.listen(3000, function(){
 	// console.log('ChatCat working on port 3000');
 	// console.log("Mode: " + env);

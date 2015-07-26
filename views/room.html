@@ -3,30 +3,78 @@
 <head>
 	<meta charset="UTF-8">
 	<title>ChatCAT</title>
-	<link rel="stylesheet" href="../public/css/room.css">
+	<link rel="stylesheet" href="../css/room.css">
 	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+	$(function(){
+		var host = '{{config.host}}';
+		var messages = io.connect(host + '/messages');
+		var roomNum = {{room_number}};
+		var userName = '{{user.fullname}}';
+		var userPic = '{{user.profilePic}}';
+		
+		messages.on('connect', function(){
+			console.log('Connected to messages socket!');
+			messages.emit('joinroom', {room:roomNum, user:userName, userPic:userPic});
+		})
+		
+		$(document).on('keyup', '.newmessage', function(e){
+			if(e.which == 13 && $(this).val()!= '')
+			{
+				console.log('Enter pressed with content' + $(this).val());
+				messages.emit('newMessage', {
+					room_number:roomNum,
+					user:userName,
+					userPic:userPic,
+					message:$(this).val()
+				})
+				
+				updateMessageFeed(userPic, $(this).val());
+				$(this).val('');
+			}
+		})
+		
+		messages.on('messagefeed', function(data){
+			console.log("Message feed received");
+			var msgs = JSON.parse(data);
+			updateMessageFeed(msgs.userPic, msgs.message);
+		})
+		
+		function updateMessageFeed(userPic, message){
+				var str = '<li>';
+				str+= '<div class="msgbox">';
+				str+= '<div class="pic"><img src="' + userPic + '"></div>';
+				str+= '<div class="msg"><p>' + message + '</p></div>';
+				str+= '</div>';
+				str+='</li>';
+				
+			$(str).prependTo($('.messages'));
+		}
+	})
+	</script>
 </head>
 <body>
 <div class="rm-container">
 		<h1 class="rm-title">ChatCAT</h1>
 		<div class="rm-userbox">
-			<img src="../public/images/profilepic.jpg" class="userPic">
-			<h3 class="userName">John Doe | <a href="#">Logout</a><a href="#">More Chatrooms</a></h3>
+			<img src="{{user.profilePic}}" class="userPic">
+			<h3 class="userName">{{user.fullname}} | <a href="/logout">Logout</a><a href="/chatrooms">More Chatrooms</a></h3>
 		</div>
 		<div class="rm-roomname">
-			<h5>World Cuisine</h5>
+			<h5>{{room_name}}</h5>
 		</div>
 		<div class="rm-messages">
 			<ul class="messages">
 				<li>
 					<div class="msgbox">
-						<div class="pic"><img src="../public/images/profilepic.jpg">Shiva Garg</div>
+						<div class="pic"><img src="{{user.profilePic}}">Shiva Garg</div>
 						<div class="msg"><p>Hi there this looks nice !</p></div>
 					</div>
 				</li>
 				<li>
 					<div class="msgbox">
-						<div class="pic"><img src="../public/images/profilepic.jpg">Shiva Garg</div>
+						<div class="pic"><img src="{{user.profilePic}}">Shiva Garg</div>
 						<div class="msg"><p>Hi there this looks nice !</p></div>
 					</div>
 				</li>
