@@ -41,6 +41,19 @@
 			updateMessageFeed(msgs.userPic, msgs.message);
 		})
 		
+		messages.on('updateUsersList', function(data){
+			console.log("User list updated");
+			var users = JSON.parse(data);
+			$('.users').html('');
+			for (var n = 0; n < users.length; ++ n)
+			{
+				var str = '<li><img src="' + users[n].userPic + '"><h5>' + users[n].user + 
+						  '</h5></li>';
+				$(str).prependTo($('.users'));
+			
+			}
+		})		
+		
 		function updateMessageFeed(userPic, message){
 				var str = '<li>';
 				str+= '<div class="msgbox">';
@@ -51,6 +64,11 @@
 				
 			$(str).prependTo($('.messages'));
 		}
+		
+		setInterval(function(){
+			message.emit('updateList', {room:roomNum});
+		}, 15000);
+		
 	})
 	</script>
 </head>
