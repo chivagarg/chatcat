@@ -4,7 +4,7 @@
 	"fb":{
 		"appID":"1711841335703494",
 		"appSecret":"e75f3336fd0e9a9979d2f99824307877",
-		"callbackURL":"http://localhost:3000/auth/facebook/callback"
+		"callbackURL":"http://chatkat.herokuapp.com/auth/facebook/callback"
 	},
-	"host":"http://localhost:3000"
+	"host":"http://chatkat.herokuapp.com"
 }
